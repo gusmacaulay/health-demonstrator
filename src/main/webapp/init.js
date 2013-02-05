@@ -4,6 +4,16 @@ Ext.namespace('org.aurin.demonstratortools.health',
 		'org.aurin.demonstratortools.health.model',
 		'org.aurin.demonstratortools.health.constants.UIOutputModel');
 org.aurin.demonstratortools.health.init = function() {
+	// Map
+	var controls = [ new OpenLayers.Control.LayerSwitcher(),
+		         		new OpenLayers.Control.Zoom() ];
+		         map = new OpenLayers.Map("map", {
+		         	controls : controls
+		         });
+		         var osm = new OpenLayers.Layer.OSM();
+		         map.addLayers([ osm ]);
+		         map.setCenter(new OpenLayers.LonLat(16093371, -4537265), 15);
+		         
 	// constants
 	org.aurin.demonstratortools.health.constants.operator.LESS_THAN = "LESS_THAN";
 	org.aurin.demonstratortools.health.constants.operator.EQUAL_OR_LESS_THAN = "EQUAL_OR_LESS_THAN";
@@ -195,13 +205,6 @@ org.aurin.demonstratortools.health.init = function() {
 		return _UIObject;
 
 	}
-	
-	var controls = [ new OpenLayers.Control.LayerSwitcher(),
-	         		new OpenLayers.Control.Zoom() ];
-	         map = new OpenLayers.Map("map", {
-	         	controls : controls
-	         });
-	         var osm = new OpenLayers.Layer.OSM();
-	         map.addLayers([ osm ])
-}
 
+	
+}
