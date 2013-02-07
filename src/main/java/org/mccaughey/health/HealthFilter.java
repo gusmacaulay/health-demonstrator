@@ -15,8 +15,14 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.PropertyIsEqualTo;
 
-public class HealthFilter {
-	private SimpleFeatureCollection getAttributeFiltered_FeatureCollection(
+class HealthFilter {
+  
+  static public SimpleFeatureCollection filter(Map<String, Object> filterParameters) {
+    return getAttributeFiltered_FeatureCollection(LayerMapping.SEIFA_Layer, MetricOperator.GREATERTHAN, "1", "IRSD_Decil");
+
+  }
+  
+  private static SimpleFeatureCollection getAttributeFiltered_FeatureCollection(
 			String layerName, MetricOperator operator, String metricValue,
 			String attributeName) {
 
@@ -59,13 +65,10 @@ public class HealthFilter {
 		return null;
 	}
 
-	public SimpleFeatureCollection doAnalyze(Map<String, Object> uiParameteres) {
-		return getAttributeFiltered_FeatureCollection(LayerMapping.SEIFA_Layer, MetricOperator.GREATERTHAN, "1", "IRSD_Decil");
 
-	}
-	public static void main(String[] args) {
-		HealthFilter h = new HealthFilter();
-		h.doAnalyze(null);
-	}
+//	public static void main(String[] args) {
+//		HealthFilter h = new HealthFilter();
+//		h.doAnalyze(null);
+//	}
 
 }
