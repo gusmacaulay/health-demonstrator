@@ -20,7 +20,8 @@ public class LayerMapping{
 	private static Map<String,String> shapeFileLocationMap ;
 	static {
 		shapeFileLocationMap = new HashMap<String, String>();
-		shapeFileLocationMap.put(SEIFA_Layer, "datasets/"+"SEIFA.shp");
+		shapeFileLocationMap.put(SEIFA_Layer, "datasets/"+"SEIFA_wgs84.shp");
+//		shapeFileLocationMap.put(SEIFA_Layer, "datasets/"+"SEIFA.shp");
 		shapeFileLocationMap.put(TYPE2_DIABETES_Layer, "datasets/"+"Type_2_Diabetes.shp");
 		shapeFileLocationMap.put(DEPRESSION_Layer, "datasets/"+"Mood_Problems.shp");
 		shapeFileLocationMap.put(OBESITY_Layer, "datasets/"+"Obesity.shp");

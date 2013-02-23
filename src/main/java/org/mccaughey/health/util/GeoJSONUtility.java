@@ -23,8 +23,8 @@ public class GeoJSONUtility {
 					LOGGER.info("Encoding CRS?");
 					fjson.setEncodeFeatureCollectionBounds(true);
 					fjson.setEncodeFeatureCollectionCRS(true);
-					// fjson.writeCRS(features.getSchema().getCoordinateReferenceSystem(),
-					// os);
+//					 fjson.writeCRS(features.getSchema().getCoordinateReferenceSystem(),
+//							 outStream);
 				} else {
 					LOGGER.info("CRS is null");
 				}

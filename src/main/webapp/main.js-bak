@@ -1,14 +1,22 @@
 
 org.aurin.demonstratortools.health.mainUI = function() {
-
-	leftpanel = new Ext.Panel(
+ 
+leftpanel = new Ext.Panel(
 			{
-				title : 'Health Indicators',
 				height : 'auto',
-				frame : true,
-
-				items : new Ext.form.FormPanel(
+			//	frame : true,
+			border: false, 	
+				items : [
+				{
+					xtype : "fieldset",
+				    title : 'Health Indicators',			
+					autoHeight : true,
+					 style:"margin:3px 12px;border-color:#04408c;border-width:2px",
+					items : [
+				
+				new Ext.form.FormPanel(
 						{
+							  border: false, 	
 							width : 600,
 							bodyPadding : 7,
 							defaults : {
@@ -406,16 +414,28 @@ org.aurin.demonstratortools.health.mainUI = function() {
 
 							]
 						})
+				]		
+			}
+			]
 			});
 
 	rightpanel = new Ext.Panel(
 			{
-				title : 'Health Services',
+				//title : 'Health Services',
 				height : 'auto',
-
-				frame : true,
-				items : new Ext.form.FormPanel(
+				  border: false, 	
+				//frame : true,
+				
+				items : [
+				{
+					xtype : "fieldset",
+				    title : 'Health Services',			
+					autoHeight : true,
+					style:"margin:3px 12px;border-color:#04408c;border-width:2px",
+					items : [
+				  new Ext.form.FormPanel(
 						{
+							  border: false, 	
 							width : 600,
 							bodyPadding : 7,
 							defaults : {
@@ -455,6 +475,41 @@ org.aurin.demonstratortools.health.mainUI = function() {
 																	'slider_value21')
 															.setDisabled(
 																	!checked);
+													Ext
+															.getCmp(
+																	'checkbox22')
+															.setDisabled(
+																	!checked);
+													Ext
+															.getCmp(
+																	'checkbox23')
+															.setDisabled(
+																	!checked);	
+													Ext
+															.getCmp(
+																	'checkbox24')
+															.setDisabled(
+																	!checked);		
+													Ext
+															.getCmp(
+																	'checkbox25')
+															.setDisabled(
+																	!checked);
+													Ext
+															.getCmp(
+																	'checkbox26')
+															.setDisabled(
+																	!checked);	
+													Ext
+															.getCmp(
+																	'checkbox27')
+															.setDisabled(
+																	!checked);																			
+													Ext
+															.getCmp(
+																	'checkbox28')
+															.setDisabled(
+																	!checked);																		
 
 												},
 											}
@@ -531,15 +586,27 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										colspan : 7
 									},
 									{
+										xtype : 'component',
+										fieldLabel : '&nbsp;',
+										labelSeparator : ' ',
+										colspan : 1
+									},
+									{
 										xtype : 'checkbox',
 										id : 'checkbox22',
 										labelSeparator : '',
 										hideLabel : true,
 										boxLabel : 'Bulk billing and fee based service',
 										fieldLabel : 'text',
-										colspan : 7,
-										checked : false
+										colspan : 6,
+										checked : false,
+										disabled : true
 
+									},{
+										xtype : 'component',
+										fieldLabel : '&nbsp;',
+										labelSeparator : ' ',
+										colspan : 1
 									},
 									{
 										xtype : 'checkbox',
@@ -548,9 +615,15 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										hideLabel : true,
 										boxLabel : 'Bulk billing only',
 										fieldLabel : 'text',
-										colspan : 7,
-										checked : false
+										colspan : 6,
+										checked : false,
+										disabled : true
 
+									},{
+										xtype : 'component',
+										fieldLabel : '&nbsp;',
+										labelSeparator : ' ',
+										colspan : 1
 									},
 									{
 										xtype : 'checkbox',
@@ -559,8 +632,9 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										hideLabel : true,
 										boxLabel : 'Fee only',
 										fieldLabel : 'text',
-										colspan : 7,
-										checked : false
+										colspan : 6,
+										checked : false,
+										disabled : true
 
 									},
 									{
@@ -576,6 +650,11 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										text : 'After Hours Services:',
 										margins : '0 0 0 10',
 										colspan : 7
+									},{
+										xtype : 'component',
+										fieldLabel : '&nbsp;',
+										labelSeparator : ' ',
+										colspan : 1
 									},
 									{
 										xtype : 'checkbox',
@@ -584,8 +663,9 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										hideLabel : true,
 										boxLabel : 'After 5 up until 8 PM on weekdays',
 										fieldLabel : 'text',
-										colspan : 4,
-										checked : false
+										colspan : 3,
+										checked : false,
+										disabled : true
 
 									},
 									{
@@ -596,8 +676,14 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										boxLabel : 'After 8 PM on weekdays',
 										fieldLabel : 'text',
 										colspan : 3,
-										checked : false
+										checked : false,
+										disabled : true
 
+									},{
+										xtype : 'component',
+										fieldLabel : '&nbsp;',
+										labelSeparator : ' ',
+										colspan : 1
 									},
 									{
 										xtype : 'checkbox',
@@ -606,8 +692,9 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										hideLabel : true,
 										boxLabel : 'Any Saturday service after 12 noon',
 										fieldLabel : 'text',
-										colspan : 4,
-										checked : false
+										colspan : 3,
+										checked : false,
+										disabled : true
 
 									},
 									{
@@ -618,7 +705,8 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										boxLabel : 'Any Sunday service',
 										fieldLabel : 'text',
 										colspan : 3,
-										checked : false
+										checked : false,
+										disabled : true
 
 									},
 									{
@@ -656,13 +744,17 @@ org.aurin.demonstratortools.health.mainUI = function() {
 
 									} ]
 						})
+				]
+				}
+				]
 			});
 			
 	org.aurin.demonstratortools.health.mainPanel = Ext.create(
 			'Ext.Panel', {
 				region: 'north',
+				// layout : 'fit',
 				collapsible: true,
-			//	id : 'recordWindow',
+			 	id : 'my-panel-id',
 				// renderTo: 'maindiv',
 				title : 'Health Demonstrator Tool',
 				resizable : false,
@@ -674,12 +766,15 @@ org.aurin.demonstratortools.health.mainUI = function() {
 				  //	minHeight: 500,
 				layout : {
 					type : 'table',
-					columns : 2
+					columns : 2,
+					tdAttrs: {
+						valign: 'top'
+					}
 				},
 				plain : true,
 				modal : true,
 				
-				items : [ leftpanel, rightpanel, window['mapPanel']  ],
+				items : [ leftpanel, rightpanel  ],
 				buttons : [ {
 					text : 'Run',
 					handler : function(w) {
@@ -712,7 +807,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 				items:[
 				{
 					xtype : "component",				 
-					 
+					 id:'mapframe',
 					height: 370,
 					autoEl : {
 						tag : "iframe",
@@ -836,60 +931,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 	}
 
 }
-//
-// x=false
-// if (!x)
-// return;
-// var _UIParams= org.aurin.demonstratortools.health.prepareUIParameteres();
-// var _encodedUIParams = Ext.encode(_UIParams);
-// var _url = generateURL("service/health-filter/runAnalysis");
-// Ext.Ajax.request({
-// url: _url,
-// type: 'json',
-// headers: {
-// 'Content-Type': 'application/json;charset=utf-8'
-// },
-// method : 'post',
-// /*params: {
-// 'UIParams':_encodedUIParams,
-// },
-// jsonData: {'UIParams':_encodedUIParams} ,
-// jsonData: {'UIParams':'aaa'} ,
-// */
-// params: {
-// post: JSON.stringify({
-//					 
-// title: 'ggg'
-//					 
-// })
-// },
-// success:function(data,options){
-// console.log(data)
-//				
-// if (data!= null &&data != undefined){
-// if (data.response!= null &&data.response != undefined){
-// if (data.response.record != null &&data.response.record != undefined){
-// //:todo
-//							
-//							
-// }
-// }
-// }
-//				 
-// },
-// failure:function(response,options){
-// new Ext.Window({
-// minHeight : '600px' ,
-// width: '50%',
-// id: 'messagewindowid',
-// //x: 0,
-// //y: 30,
-// layout: "fit",
-// html:response.responseText
-// }).show();
-// }
-// });
-// }
+ 
 
 Ext.onReady(function() {
 	org.aurin.demonstratortools.health.init();

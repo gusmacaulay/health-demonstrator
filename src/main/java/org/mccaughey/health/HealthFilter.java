@@ -1,13 +1,13 @@
 package org.mccaughey.health;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.geotools.data.FileDataStore;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
+import org.json.JSONArray;
 import org.mccaughey.constant.MetricOperator;
 import org.mccaughey.layer.config.LayerMapping;
 import org.mccaughey.service.Config;
@@ -50,7 +50,9 @@ public class HealthFilter {
 		// get a feature collection of filtered features
 		try {
 			SimpleFeatureCollection fCollection = featureSource
-					.getFeatures(query);
+					.getFeatures();
+//			SimpleFeatureCollection fCollection = featureSource
+//					.getFeatures(query);
 			return fCollection;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -59,7 +61,7 @@ public class HealthFilter {
 		return null;
 	}
 
-	public SimpleFeatureCollection doAnalyze(Map<String, Object> uiParameteres) {
+	public SimpleFeatureCollection doAnalyze(JSONArray uiParams) {
 		return getAttributeFiltered_FeatureCollection(LayerMapping.SEIFA_Layer, MetricOperator.GREATERTHAN, "1", "IRSD_Decil");
 
 	}
