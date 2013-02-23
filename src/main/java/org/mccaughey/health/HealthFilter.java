@@ -1,7 +1,5 @@
 package org.mccaughey.health;
 
-import java.io.IOException;
-
 import org.geotools.data.FileDataStore;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -11,58 +9,34 @@ import org.json.JSONArray;
 import org.mccaughey.constant.MetricOperator;
 import org.mccaughey.layer.config.LayerMapping;
 import org.mccaughey.service.Config;
-import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.PropertyIsEqualTo;
+import org.opengis.filter.PropertyIsGreaterThan;
 
 public class HealthFilter {
-	private SimpleFeatureCollection getAttributeFiltered_FeatureCollection(
-			String layerName, MetricOperator operator, String metricValue,
-			String attributeName) {
+    private SimpleFeatureCollection getAttributeFiltered_FeatureCollection(
+	    SimpleFeatureSource featureSource, MetricOperator operator, String metricValue,
+	    String attributeName) throws Exception {
 
-		SimpleFeatureSource featureSource = null;
-		try {
-			featureSource = ((FileDataStore) Config.getDefaultFactory()
-					.getDataStore(layerName)).getFeatureSource();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+	Query query = new Query();
 
-		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-		FeatureType schema = featureSource.getSchema();
+	PropertyIsGreaterThan filter = ff.greater(ff.property(attributeName),
+		ff.literal(metricValue));
 
-		String geometryPropertyName = schema.getGeometryDescriptor()
-				.getLocalName();
+	query.setFilter(filter);
 
-		Query query = new Query();
+	// get a feature collection of filtered features
+	SimpleFeatureCollection fCollection = featureSource.getFeatures(query);
+	return fCollection;
+    }
 
-		PropertyIsEqualTo filter = ff.equals(ff.property(attributeName),
-				ff.literal(metricValue));// inundation
+    public SimpleFeatureCollection filter(JSONArray uiParams) throws Exception {
+	SimpleFeatureSource seifaSource = ((FileDataStore) Config
+		.getDefaultFactory().getDataStore(LayerMapping.SEIFA_Layer))
+		.getFeatureSource();
+	
+	return getAttributeFiltered_FeatureCollection(seifaSource,
+		MetricOperator.GREATERTHAN, "3", "IRSD_Decil");
 
-		query.setFilter(filter);
-
-		// /
-
-		// get a feature collection of filtered features
-		try {
-			SimpleFeatureCollection fCollection = featureSource
-					.getFeatures();
-//			SimpleFeatureCollection fCollection = featureSource
-//					.getFeatures(query);
-			return fCollection;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public SimpleFeatureCollection filter(JSONArray uiParams) {
-		return getAttributeFiltered_FeatureCollection(LayerMapping.SEIFA_Layer, MetricOperator.GREATERTHAN, "1", "IRSD_Decil");
-
-	}
+    }
 }
