@@ -27,23 +27,6 @@ public class HealthFilterResource {
 	static final Logger LOGGER = LoggerFactory
 			.getLogger(HealthFilterResource.class);
 
-	/*@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public void getRegions(HttpServletResponse response, @PathVariable String id)
-			throws Exception {
-		LOGGER.info("Got id:" + id);
-	}*/
-
-	/*
-	 * @RequestMapping(value = "/runAnalysis", method = RequestMethod.POST,
-	 * headers = "Content-Type=text/plain")//, consumes="application/json",
-	 * produces="application/json")
-	 * 
-	 * @ResponseStatus(HttpStatus.OK) public @ResponseBody Map<String, Object>
-	 * handleFilteringRequest(
-	 * 
-	 * @RequestBody Map<String, Object> uiParameteres) throws Exception {
-	 */
-
 	@RequestMapping(method = RequestMethod.POST, value = "/runAnalysis", consumes = "application/json")
 	public void handleFilteringRequest(
 			@RequestBody Map<String, Object> uiParameteres,HttpServletRequest request,
@@ -71,36 +54,11 @@ public class HealthFilterResource {
 		JSONArray jsonArray = new JSONArray(uiParameteresObj.toString());
 	 
 		 
-		SimpleFeatureCollection outputfeatures = healthFilter
-				.doAnalyze(jsonArray);
-		GeoJSONUtility
-		.writeFeatures(outputfeatures, response.getOutputStream());
+		SimpleFeatureCollection outputfeatures = healthFilter.filter(jsonArray);
+		GeoJSONUtility.writeFeatures(outputfeatures, response.getOutputStream());
 		
 	}
 	
-	
-	/*@RequestMapping(method = RequestMethod.GET, value = "runAnalysis_get")
-	public void handleFilteringRequest2( 
-			HttpServletResponse response) throws Exception {
-		
-		System.out.println("handleFilteringRequest");
-		HealthFilter healthFilter = new HealthFilter();
-		
-		SimpleFeatureCollection outputfeatures = healthFilter
-				.doAnalyze(null);
-		GeoJSONUtility
-		.writeFeatures(outputfeatures, response.getOutputStream());
-		
-	}*/
-	
-	//something works
-	/*@RequestMapping(value = "ccc2", method = RequestMethod.GET)
-	public @ResponseBody
-	Map<String, ? extends Object> loadLGAs2() throws Exception {
-		System.out.println("fgf");
-		return null;
-	}*/
-
 	private JSONArray getUIParameters(Map<String, Object> uiParameteres) throws JSONException {
 //		String fakeparameters = "{\"UIParams\":\"[{\"METRIC_NAME\":\"SEIFA_METRIC\",\"METRIC_INCLUSION\":true,\"OPERATOR\":\"LESS_THAN\",\"METRIC_VALUE\":\"120\"},{\"METRIC_NAME\":\"TYPE2_DIABETES\",\"METRIC_INCLUSION\":true,\"OPERATOR\":\"LESS_THAN\",\"METRIC_VALUE\":\"70\"},{\"METRIC_NAME\":\"DEPRESSION\",\"METRIC_INCLUSION\":true,\"OPERATOR\":\"LESS_THAN\",\"METRIC_VALUE\":\"280\"},{\"METRIC_NAME\":\"OBESITY\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"SMOKING\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"NO_ACCESS_TO_GENERAL_PRACTICE\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"BULK_BILLING_AND_FEE_BASED_SERVICE\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"BULK_BILLING_ONLY\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"FEE_ONLY\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"AFTER_5_UP_UNTIL_8_PM_ON_WEEKDAYS\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"AFTER_8_PM_ON_WEEKDAYS\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"ANY_SATURDAY_SERVICE_AFTER_12_NOON\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"ANY_SUNDAY_SERVICE\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"COMMUNITY_HEALTH_CENTRE\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"MENTAL_HEALTH_SERVICE_PROVIDER\",\"METRIC_INCLUSION\":false}]\"}";
 //		String fakearrayparameters =  "[{\"METRIC_NAME\":\"SEIFA_METRIC\",\"METRIC_INCLUSION\":true,\"OPERATOR\":\"LESS_THAN\",\"METRIC_VALUE\":\"120\"},{\"METRIC_NAME\":\"TYPE2_DIABETES\",\"METRIC_INCLUSION\":true,\"OPERATOR\":\"LESS_THAN\",\"METRIC_VALUE\":\"70\"},{\"METRIC_NAME\":\"DEPRESSION\",\"METRIC_INCLUSION\":true,\"OPERATOR\":\"LESS_THAN\",\"METRIC_VALUE\":\"280\"},{\"METRIC_NAME\":\"OBESITY\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"SMOKING\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"NO_ACCESS_TO_GENERAL_PRACTICE\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"BULK_BILLING_AND_FEE_BASED_SERVICE\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"BULK_BILLING_ONLY\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"FEE_ONLY\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"AFTER_5_UP_UNTIL_8_PM_ON_WEEKDAYS\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"AFTER_8_PM_ON_WEEKDAYS\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"ANY_SATURDAY_SERVICE_AFTER_12_NOON\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"ANY_SUNDAY_SERVICE\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"COMMUNITY_HEALTH_CENTRE\",\"METRIC_INCLUSION\":false},{\"METRIC_NAME\":\"MENTAL_HEALTH_SERVICE_PROVIDER\",\"METRIC_INCLUSION\":false}]";
@@ -110,20 +68,4 @@ public class HealthFilterResource {
 
 		return jsonArray;
 	}
-
-   
-
- /* @RequestMapping(method = RequestMethod.POST, value = "/runAnalysis")
-  public @ResponseBody
-  void addEmp(@RequestBody Map<String, Object> filterParameters) {
-    LOGGER.info("Post received");
-    return;
-  }
-
-  @RequestMapping(value = "ccc", method = RequestMethod.GET)
-  public @ResponseBody
-  Map<String, ? extends Object> loadLGAs() throws Exception {
-    System.out.println("fgf");
-    return null;
-  }*/
 }

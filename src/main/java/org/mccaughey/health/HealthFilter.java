@@ -61,13 +61,8 @@ public class HealthFilter {
 		return null;
 	}
 
-	public SimpleFeatureCollection doAnalyze(JSONArray uiParams) {
+	public SimpleFeatureCollection filter(JSONArray uiParams) {
 		return getAttributeFiltered_FeatureCollection(LayerMapping.SEIFA_Layer, MetricOperator.GREATERTHAN, "1", "IRSD_Decil");
 
 	}
-	public static void main(String[] args) {
-		HealthFilter h = new HealthFilter();
-		h.doAnalyze(null);
-	}
-
 }
