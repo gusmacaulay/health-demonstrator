@@ -16,9 +16,7 @@ public class HealthFilterTest {
 	if (uiParameteresObj==null)
 		throw new Exception("UI parameters doesn't exist in session's attribute");
 	HealthFilter healthFilter = new HealthFilter();
-
-	JSONArray jsonArray = new JSONArray(uiParameteresObj.toString());
-	SimpleFeatureCollection outputfeatures = healthFilter.filter(jsonArray);
+	SimpleFeatureCollection outputfeatures = healthFilter.filter(uiParameteresObj.toString());
 	GeoJSONUtility.writeFeatures(outputfeatures, new FileOutputStream(new File("./target/testHealthFilterSimple.json")));
     }
 }
