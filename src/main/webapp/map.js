@@ -19,9 +19,9 @@ window['map_init'] = function() {
  var geographic = new OpenLayers.Projection("EPSG:4326");
 var mercator = new OpenLayers.Projection("EPSG:900913");
 
-	window['paths'] = new OpenLayers.Layer.Vector("Paths", {
-		 projection : geographic,
-		 //projection : mercator,
+	window['paths'] = new OpenLayers.Layer.Vector("Region of Interest", {
+		 //projection : geographic,
+		 projection : mercator,
 		strategies : [ new OpenLayers.Strategy.Fixed() ],
 
 		protocol : new OpenLayers.Protocol.HTTP({
