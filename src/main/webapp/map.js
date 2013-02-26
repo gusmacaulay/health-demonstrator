@@ -43,7 +43,7 @@ window['map_init'] = function() {
 
 	map.addLayers([ osm, window['paths'] ]);
 
-	map.setCenter(new OpenLayers.LonLat(16093371, -4537265), 10);
+	map.setCenter(new OpenLayers.LonLat(16133371, -4544265), 12);
 	/*
 	 * map.setCenter( new OpenLayers.LonLat(-37.52372699908832,
 	 * 144.583322).transform( new OpenLayers.Projection("EPSG:4328"),
