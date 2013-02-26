@@ -96,16 +96,7 @@ public class HealthFilter {
     while (AFeatures.hasNext()) {
       SimpleFeature featureA = AFeatures.next();
       Geometry geometryA = (Geometry) featureA.getDefaultGeometry();
-      // while (BFeatures.hasNext()) {
-      // SimpleFeature featureB = BFeatures.next();
-      // Geometry geometryB = (Geometry) featureB.getDefaultGeometry();
-      // if (geometryB.intersects(geometryA)) {
-      // LOGGER.info("ding!");
-      // }
-      // }
 
-      // LOGGER.info(A.getSchema().getGeometryDescriptor().getName()
-      // .toString());
       Filter filter = ff.intersects(
           ff.property(A.getSchema().getGeometryDescriptor().getName()),
           ff.literal(geometryA));
@@ -114,6 +105,7 @@ public class HealthFilter {
       intersectionFeatures.addAll(DataUtilities.list(BSource
           .getFeatures(filter)));
     }
+    AFeatures.close();
     // LOGGER.info("Ding!" + intersectionFeatures.size());
     return DataUtilities.collection(intersectionFeatures);
   }

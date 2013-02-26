@@ -1,18 +1,27 @@
 package org.mccaughey.health;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.mccaughey.health.util.GeoJSONUtility;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -60,30 +69,51 @@ public class HealthFilterResource {
         .filter(uiParameteresObj.toString());
     CoordinateReferenceSystem fromCRS = outputfeatures.getSchema()
         .getCoordinateReferenceSystem();
-    CoordinateReferenceSystem toCRS = CRS.decode("EPSG:4326");
-    GeoJSONUtility.writeFeatures(outputfeatures, response.getOutputStream());
+    CoordinateReferenceSystem toCRS = CRS.decode("EPSG:3857");
+    GeoJSONUtility.writeFeatures(reproject(outputfeatures, fromCRS, toCRS),
+        response.getOutputStream());
 
   }
 
   private SimpleFeatureCollection reproject(SimpleFeatureCollection collection,
-      CoordinateReferenceSystem fromCRS, CoordinateReferenceSystem toCRS) {
+      CoordinateReferenceSystem fromCRS, CoordinateReferenceSystem toCRS)
+      throws MismatchedDimensionException, TransformException, FactoryException {
 
     boolean lenient = true; // allow for some error due to different datums
     MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, lenient);
-
+    SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
+    ftb.setName("reprojected");
+    ftb.crs(toCRS);
+    ftb.setAttributes(collection.getSchema().getAttributeDescriptors());
+   
+   
+    SimpleFeatureType ft = ftb.buildFeatureType();
+    LOGGER.info("NEW CRS " + ft.getCoordinateReferenceSystem());
     FeatureIterator iter = collection.features();
-
+    List<SimpleFeature> reprojected = new ArrayList();
     try {
       while (iter.hasNext()) {
-        SimpleFeature feature = (SimpleFeature)iter.next();
-        Geometry geom = (Geometry)feature.getDefaultGeometry();
-        Geometry geometry2 = JTS.transform(geometry, transform);
+        SimpleFeature feature = (SimpleFeature) iter.next();
+        Geometry fromGeom = (Geometry) feature.getDefaultGeometry();
+        Geometry toGeom = JTS.transform(fromGeom, transform);
 
-        copy.setDefaultGeometry(geometry2);
+        reprojected.add(buildNewFeature(feature, toGeom, ft));
+
       }
+      return DataUtilities.collection(reprojected);
     } finally {
-      DataUtilities.close(iter);
+      iter.close();
     }
+
+  }
+
+  private SimpleFeature buildNewFeature(SimpleFeature feature, Geometry geom,
+      SimpleFeatureType ft) {
+
+    SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(ft);
+    featureBuilder.addAll(feature.getAttributes());
+    featureBuilder.set(feature.getDefaultGeometryProperty().getName(), geom);
+    return featureBuilder.buildFeature(feature.getID());
 
   }
 
