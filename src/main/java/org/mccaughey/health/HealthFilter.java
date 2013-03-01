@@ -32,12 +32,14 @@ public class HealthFilter {
 
   public SimpleFeatureCollection filter(String queryJSON) throws Exception {
 
-    List<JSONObject> metrics = JsonPath.read(queryJSON, "$[*]");
-
-    for (JSONObject metric : metrics) {
-      
-      LOGGER.info(metric.toJSONString());
-    }
+//    List<JSONObject> metrics = JsonPath.read(queryJSON, "$[*]");
+//
+//    for (JSONObject metric : metrics) {
+//      
+//      LOGGER.info(metric.toJSONString());
+//    }
+    
+    LOGGER.info("JSON: {}",queryJSON);
     
     String seifaVal = JsonPath.read(queryJSON, "$[?(@['METRIC_NAME'] == 'SEIFA_METRIC')].METRIC_VALUE[0]");
     LOGGER.info("seifa val:" + seifaVal);
