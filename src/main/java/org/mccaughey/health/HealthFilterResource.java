@@ -1,5 +1,8 @@
 package org.mccaughey.health;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.lf5.util.StreamUtils;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -63,7 +67,7 @@ public class HealthFilterResource {
         .getCoordinateReferenceSystem();
     CoordinateReferenceSystem toCRS = CRS.decode("EPSG:3857");
     GeoJSONUtility.writeFeatures(reproject(outputfeatures, fromCRS, toCRS),
-        response.getOutputStream());
+        new FileOutputStream(new File("out.geojson")));
 
 
   }
@@ -72,24 +76,28 @@ public class HealthFilterResource {
   public void getFilterResult(HttpServletRequest request,
       HttpServletResponse response) throws Exception {
     
-   // LOGGER.info(request.getSession().getAttribute("uiParameters"));
-    System.out.println("getFilterResult");
-    Object uiParameteresObj = request.getSession()
-        .getAttribute("uiParameters");
-    if (uiParameteresObj == null)
-      throw new Exception(
-          "Internal Server Error: UI parameters doesn't exist in session's attribute");
-    HealthFilter healthFilter = new HealthFilter();
+      // Write file contents to output stream...
+      
+      StreamUtils.copy(new FileInputStream(new File("out.geojson")), response.getOutputStream());
 
-    // JSONArray jsonArray = new JSONArray();
-
-    SimpleFeatureCollection outputfeatures = healthFilter
-        .filter(uiParameteresObj.toString());
-    CoordinateReferenceSystem fromCRS = outputfeatures.getSchema()
-        .getCoordinateReferenceSystem();
-    CoordinateReferenceSystem toCRS = CRS.decode("EPSG:3857");
-    GeoJSONUtility.writeFeatures(reproject(outputfeatures, fromCRS, toCRS),
-        response.getOutputStream());
+//   // LOGGER.info(request.getSession().getAttribute("uiParameters"));
+//    System.out.println("getFilterResult");
+//    Object uiParameteresObj = request.getSession()
+//        .getAttribute("uiParameters");
+//    if (uiParameteresObj == null)
+//      throw new Exception(
+//          "Internal Server Error: UI parameters doesn't exist in session's attribute");
+//    HealthFilter healthFilter = new HealthFilter();
+//
+//    // JSONArray jsonArray = new JSONArray();
+//
+//    SimpleFeatureCollection outputfeatures = healthFilter
+//        .filter(uiParameteresObj.toString());
+//    CoordinateReferenceSystem fromCRS = outputfeatures.getSchema()
+//        .getCoordinateReferenceSystem();
+//    CoordinateReferenceSystem toCRS = CRS.decode("EPSG:3857");
+//    GeoJSONUtility.writeFeatures(reproject(outputfeatures, fromCRS, toCRS),
+//        response.getOutputStream());
 
   }
 

@@ -830,7 +830,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 			method : 'post',
 			waitMsg : 'Saving changes...',
 			jsonData : {
-				'UIParams' : _encodedUIParams
+				'params' : _encodedUIParams
 			}
 		});
 	}
