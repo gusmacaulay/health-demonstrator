@@ -17,14 +17,14 @@ public class LayerMapping {
     private static Map<String, String> shapeFileLocationMap;
     static {
 	shapeFileLocationMap = new HashMap<String, String>();
-	shapeFileLocationMap.put(SEIFA_Layer, "datasets/" + "SEIFA.shp");
+	shapeFileLocationMap.put(SEIFA_Layer, "datasets/" + "SEIFA_vicgrid.shp");
 	// shapeFileLocationMap.put(SEIFA_Layer, "datasets/"+"SEIFA.shp");
 	shapeFileLocationMap.put(TYPE2_DIABETES_Layer, "datasets/"
-		+ "Type_2_Diabetes.shp");
+		+ "Type_2_Diabetes_vicgrid.shp");
 	shapeFileLocationMap.put(DEPRESSION_Layer, "datasets/"
-		+ "Mood_Problems.shp");
-	shapeFileLocationMap.put(OBESITY_Layer, "datasets/" + "Obesity.shp");
-	shapeFileLocationMap.put(SMOKING_Layer, "datasets/" + "Smoking.shp");
+		+ "Mood_Problems_vicgrid.shp");
+	shapeFileLocationMap.put(OBESITY_Layer, "datasets/" + "Obesity_vicgrid.shp");
+	shapeFileLocationMap.put(SMOKING_Layer, "datasets/" + "Smoking_vicgrid.shp");
 	shapeFileLocationMap.put(GENERAL_PRACTICE_Layer, "datasets/"
 		+ "GPs_INWMML.shp");
 	shapeFileLocationMap.put(COMMUNITY_HEALTH_CENTRE_Layer, "datasets/"

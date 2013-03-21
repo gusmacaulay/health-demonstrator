@@ -42,6 +42,10 @@ public class HealthFilter {
     LOGGER.info("JSON: {}",queryJSON);
     
     String seifaVal = JsonPath.read(queryJSON, "$[?(@['METRIC_NAME'] == 'SEIFA_METRIC')].METRIC_VALUE[0]");
+    String diabetesValue = JsonPath.read(queryJSON, "$[?(@['METRIC_NAME'] == 'TYPE2_DIABETES')].METRIC_VALUE[0]");
+    String depressionValue = JsonPath.read(queryJSON, "$[?(@['METRIC_NAME'] == 'DEPRESSION')].METRIC_VALUE[0]");
+    String obesityValue = JsonPath.read(queryJSON, "$[?(@['METRIC_NAME'] == 'OBESITY')].METRIC_VALUE[0]");
+    String smokingValue = JsonPath.read(queryJSON, "$[?(@['METRIC_NAME'] == 'SMOKING')].METRIC_VALUE[0]");
     LOGGER.info("seifa val:" + seifaVal);
     
     SimpleFeatureSource seifaSource = ((FileDataStore) Config
@@ -56,16 +60,40 @@ public class HealthFilter {
         .getDefaultFactory().getDataStore(LayerMapping.DEPRESSION_Layer))
         .getFeatureSource();
 
-    SimpleFeatureCollection seifaFeatures = getAttributeFiltered_FeatureCollection(
-        seifaSource, MetricOperator.GREATERTHAN, "2", "IRSD_Decil");
-
-    SimpleFeatureCollection diabetesFeatures = getAttributeFiltered_FeatureCollection(
-        diabetesSource, MetricOperator.GREATERTHAN, "3.8", "RatePer100");
-
-    SimpleFeatureCollection depressionFeatures = getAttributeFiltered_FeatureCollection(
-        depressionSource, MetricOperator.GREATERTHAN, "8", "RatePer100");
+    List<SimpleFeatureCollection> layers = new ArrayList<SimpleFeatureCollection>();
     
-    return intersection(intersection(seifaFeatures, depressionFeatures),diabetesFeatures);
+    SimpleFeatureCollection seifaFeatures = getAttributeFiltered_FeatureCollection(
+        seifaSource, MetricOperator.GREATERTHAN, seifaVal, "IRSD_Decil");
+    layers.add(seifaFeatures);
+    SimpleFeatureCollection diabetesFeatures = getAttributeFiltered_FeatureCollection(
+        diabetesSource, MetricOperator.GREATERTHAN, diabetesValue, "RatePer100");
+    layers.add(diabetesFeatures);
+    SimpleFeatureCollection depressionFeatures = getAttributeFiltered_FeatureCollection(
+        depressionSource, MetricOperator.GREATERTHAN, depressionValue, "RatePer100");
+    layers.add(depressionFeatures);
+    SimpleFeatureCollection obesityFeatures = getAttributeFiltered_FeatureCollection(
+            depressionSource, MetricOperator.GREATERTHAN, obesityValue, "ObesePeopl");
+    layers.add(obesityFeatures);
+    SimpleFeatureCollection smokingFeatures = getAttributeFiltered_FeatureCollection(
+            depressionSource, MetricOperator.GREATERTHAN, smokingValue, "SmokePop");
+    layers.add(smokingFeatures);
+    
+    SimpleFeatureCollection filteredFeatures = null; //= seifaFeatures;
+    for(SimpleFeatureCollection intersectFeatures : layers) {
+    	LOGGER.info("Layer size {}", intersectFeatures.size());
+    	if ((filteredFeatures == null) && (intersectFeatures.size() > 0)) {
+    		filteredFeatures = intersectFeatures;
+    		LOGGER.info("Filtered features: {}", filteredFeatures.size());
+    	}
+    	else if ((filteredFeatures != null) && (intersectFeatures.size() > 0)) {
+    		filteredFeatures = intersection(filteredFeatures,intersectFeatures);
+    		LOGGER.info("Filtered/intersected features: {}", filteredFeatures.size());
+    	}
+    	
+    }
+    LOGGER.info("Filtered total features: {}", filteredFeatures.size());
+    return filteredFeatures;
+    //return intersection(intersection(intersection(intersection(seifaFeatures, depressionFeatures),diabetesFeatures),obesityFeatures),smokingFeatures);
 
   }
 
@@ -90,7 +118,6 @@ public class HealthFilter {
   private SimpleFeatureCollection intersection(SimpleFeatureCollection B,
       SimpleFeatureCollection A) throws IOException {
     SimpleFeatureIterator AFeatures = A.features();
-    SimpleFeatureIterator BFeatures = B.features();
     FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
     LOGGER.info(B.size() + " " + A.size());
     SimpleFeatureSource BSource = DataUtilities.source(B);
@@ -102,13 +129,13 @@ public class HealthFilter {
       Filter filter = ff.intersects(
           ff.property(A.getSchema().getGeometryDescriptor().getName()),
           ff.literal(geometryA));
-      SimpleFeatureCollection i = BSource.getFeatures(filter);
+     // SimpleFeatureCollection i = BSource.getFeatures(filter);
       // LOGGER.info("found " + i.size());
       intersectionFeatures.addAll(DataUtilities.list(BSource
           .getFeatures(filter)));
     }
     AFeatures.close();
-    // LOGGER.info("Ding!" + intersectionFeatures.size());
+    LOGGER.info("Ding!" + intersectionFeatures.size());
     return DataUtilities.collection(intersectionFeatures);
   }
 
