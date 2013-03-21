@@ -689,22 +689,10 @@ org.aurin.demonstratortools.health.mainUI = function() {
 			});
 		 
 			//
-			Ext.create('Ext.container.Viewport', {
+			VIEWPORT = Ext.create('Ext.container.Viewport', {
 			layout: 'border',
 			items: [ org.aurin.demonstratortools.health.mainPanel
 			,
-			/*{
-				region: 'north',
-				id: 'mappanel',
-				//collapsible: true,
-				title: 'Navigation',
-				width: 150,
-				height: 150
-				// could use a TreePanel or AccordionLayout for navigational items
-			}
-			*/ 
-			//org.aurin.demonstratortools.health.mainPanel
-			
 			{			 	
 				xtype:'panel',
 				region: 'center',
@@ -712,7 +700,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 				items:[
 				{
 					xtype : "component",				 
-					 
+					 id    : 'iframe-window',
 					height: 370,
 					autoEl : {
 						tag : "iframe",
@@ -833,6 +821,8 @@ org.aurin.demonstratortools.health.mainUI = function() {
 				'params' : _encodedUIParams
 			}
 		});
+		Ext.getDom('iframe-window').src = Ext.getDom('iframe-window').src
+		alert("map " + VIEWPORT);
 	}
 
 }
