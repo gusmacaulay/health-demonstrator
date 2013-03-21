@@ -439,7 +439,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										hideLabel : true,
 										boxLabel : 'General Practice',
 										fieldLabel : 'text',
-										colspan : 7,
+										colspan : 12,
 										checked : false,
 										listeners : {
 											change : {
@@ -492,10 +492,10 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										hideLabel : true,
 										useTips : true,
 										width : 214,
-										value : 50,
-										increment : 10,
-										minValue : 0,
-										maxValue : 100,
+										value : 100,
+										increment : 100,
+										minValue : 100,
+										maxValue : 1200,
 										disabled : true,
 										listeners : {
 											change : function(select, thumb,
@@ -822,7 +822,6 @@ org.aurin.demonstratortools.health.mainUI = function() {
 			}
 		});
 		Ext.getDom('iframe-window').src = Ext.getDom('iframe-window').src
-		alert("map " + VIEWPORT);
 	}
 
 }
