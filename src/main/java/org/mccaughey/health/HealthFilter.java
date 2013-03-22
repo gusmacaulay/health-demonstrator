@@ -108,11 +108,11 @@ public class HealthFilter {
 		SimpleFeatureCollection filteredFeatures = null; // = seifaFeatures;
 		for (SimpleFeatureCollection intersectFeatures : layers) {
 			LOGGER.info("Layer size {}", intersectFeatures.size());
-			if ((filteredFeatures == null) && (intersectFeatures.size() > 0)) {
+			if ((filteredFeatures == null)) { // && (intersectFeatures.size() > 0)) {
 				filteredFeatures = intersectFeatures;
 				LOGGER.info("Filtered features: {}", filteredFeatures.size());
-			} else if ((filteredFeatures != null)
-					&& (intersectFeatures.size() > 0)) {
+			} else if ((filteredFeatures != null)) {
+				//	&& (intersectFeatures.size() > 0)) {
 				filteredFeatures = intersection(filteredFeatures,
 						intersectFeatures);
 				LOGGER.info("Filtered/intersected features: {}",
@@ -120,8 +120,10 @@ public class HealthFilter {
 			}
 
 		}
-		LOGGER.info("Filtered total features: {}", filteredFeatures.size());
-		return difference(filteredFeatures,gpBuffers);
+		LOGGER.info("Intersected total features: {}", filteredFeatures.size());
+		SimpleFeatureCollection gpExcluded = difference(filteredFeatures,gpBuffers);
+		LOGGER.info("Filtered total features: {}", gpExcluded.size());
+		return gpExcluded;
 		// return
 		// intersection(intersection(intersection(intersection(seifaFeatures,
 		// depressionFeatures),diabetesFeatures),obesityFeatures),smokingFeatures);
@@ -185,9 +187,11 @@ public class HealthFilter {
 				union = union.union(geometryB);
 			}
 		}
-		Filter filter = ff.disjoint(
+		BFeatures.close();
+		LOGGER.info("Union area {}", union.getArea());
+		Filter filter = ff.not(ff.intersects(
 				ff.property(B.getSchema().getGeometryDescriptor().getName()),
-				ff.literal(union));
+				ff.literal(union)));
 		// SimpleFeatureCollection i = BSource.getFeatures(filter);
 		// LOGGER.info("found " + i.size());
 		return ASource.getFeatures(filter);
