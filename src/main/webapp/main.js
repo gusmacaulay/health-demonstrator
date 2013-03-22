@@ -819,9 +819,10 @@ org.aurin.demonstratortools.health.mainUI = function() {
 			waitMsg : 'Saving changes...',
 			jsonData : {
 				'params' : _encodedUIParams
-			}
+			},
+			callback: function() { Ext.getDom('iframe-window').src = Ext.getDom('iframe-window').src }
 		});
-		Ext.getDom('iframe-window').src = Ext.getDom('iframe-window').src
+		//Ext.getDom('iframe-window').src = Ext.getDom('iframe-window').src
 	}
 
 }
