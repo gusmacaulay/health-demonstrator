@@ -52,8 +52,9 @@ public class HealthFilter {
 		String smokingValue = JsonPath.read(queryJSON,
 				"$[?(@['METRIC_NAME'] == 'SMOKING')].METRIC_VALUE[0]");
 		LOGGER.info("seifa val:" + seifaVal);
-		String gpDistance = JsonPath.read(queryJSON,
-				"$[?(@['METRIC_NAME'] == 'NO_ACCESS_TO_GENERAL_PRACTICE')].METRIC_VALUE[0]");
+		String gpDistance = JsonPath
+				.read(queryJSON,
+						"$[?(@['METRIC_NAME'] == 'NO_ACCESS_TO_GENERAL_PRACTICE')].METRIC_VALUE[0]");
 		SimpleFeatureSource seifaSource = ((FileDataStore) Config
 				.getDefaultFactory().getDataStore(LayerMapping.SEIFA_Layer))
 				.getFeatureSource();
@@ -74,10 +75,11 @@ public class HealthFilter {
 				.getDefaultFactory().getDataStore(LayerMapping.SMOKING_Layer))
 				.getFeatureSource();
 
-		
-		String gpBuffersFile = LayerMapping.getPath(LayerMapping.GP_Buffers).replace("DIST", gpDistance);
+		String gpBuffersFile = LayerMapping.getPath(LayerMapping.GP_Buffers)
+				.replace("DIST", gpDistance);
 		LOGGER.info("Buffers file?" + gpBuffersFile);
-		SimpleFeatureSource gpSource = FileDataStoreFinder.getDataStore(new File(gpBuffersFile)).getFeatureSource();
+		SimpleFeatureSource gpSource = FileDataStoreFinder.getDataStore(
+				new File(gpBuffersFile)).getFeatureSource();
 
 		List<SimpleFeatureCollection> layers = new ArrayList<SimpleFeatureCollection>();
 
@@ -101,7 +103,7 @@ public class HealthFilter {
 				"SmokePop");
 		layers.add(smokingFeatures);
 		SimpleFeatureCollection gpBuffers = gpSource.getFeatures();
-		layers.add(gpBuffers);
+		//layers.add(gpBuffers);
 
 		SimpleFeatureCollection filteredFeatures = null; // = seifaFeatures;
 		for (SimpleFeatureCollection intersectFeatures : layers) {
@@ -119,7 +121,7 @@ public class HealthFilter {
 
 		}
 		LOGGER.info("Filtered total features: {}", filteredFeatures.size());
-		return filteredFeatures;
+		return difference(filteredFeatures,gpBuffers);
 		// return
 		// intersection(intersection(intersection(intersection(seifaFeatures,
 		// depressionFeatures),diabetesFeatures),obesityFeatures),smokingFeatures);
@@ -148,7 +150,7 @@ public class HealthFilter {
 			SimpleFeatureCollection A) throws IOException {
 		SimpleFeatureIterator AFeatures = A.features();
 		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-		LOGGER.info(B.size() + " " + A.size());
+		// LOGGER.info(B.size() + " " + A.size());
 		SimpleFeatureSource BSource = DataUtilities.source(B);
 		List<SimpleFeature> intersectionFeatures = new ArrayList<SimpleFeature>();
 		while (AFeatures.hasNext()) {
@@ -163,8 +165,32 @@ public class HealthFilter {
 					.getFeatures(filter)));
 		}
 		AFeatures.close();
-		LOGGER.info("Ding!" + intersectionFeatures.size());
+		// LOGGER.info("Ding!" + intersectionFeatures.size());
 		return DataUtilities.collection(intersectionFeatures);
 	}
 
+	private SimpleFeatureCollection difference(SimpleFeatureCollection A,
+			SimpleFeatureCollection B) throws IOException {
+		SimpleFeatureIterator BFeatures = B.features();
+		List<SimpleFeature> difference = new ArrayList<SimpleFeature>();
+		SimpleFeatureSource ASource = DataUtilities.source(A);
+		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+		Geometry union = null;
+		while (BFeatures.hasNext()) {
+			SimpleFeature featureB = BFeatures.next();
+			Geometry geometryB = (Geometry) featureB.getDefaultGeometry();
+			if (union == null) {
+				union = geometryB;
+			} else {
+				union = union.union(geometryB);
+			}
+		}
+		Filter filter = ff.disjoint(
+				ff.property(B.getSchema().getGeometryDescriptor().getName()),
+				ff.literal(union));
+		// SimpleFeatureCollection i = BSource.getFeatures(filter);
+		// LOGGER.info("found " + i.size());
+		return ASource.getFeatures(filter);
+
+	}
 }
