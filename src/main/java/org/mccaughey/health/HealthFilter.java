@@ -1,25 +1,26 @@
 package org.mccaughey.health;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FileDataStore;
-import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
-import org.mccaughey.constant.MetricOperator;
 import org.mccaughey.layer.config.LayerMapping;
 import org.mccaughey.service.Config;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.PropertyIsEqualTo;
 import org.opengis.filter.PropertyIsGreaterThan;
+import org.opengis.filter.PropertyIsGreaterThanOrEqualTo;
+import org.opengis.filter.PropertyIsLessThan;
+import org.opengis.filter.PropertyIsLessThanOrEqualTo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,14 +44,25 @@ public class HealthFilter {
 
 		String seifaVal = JsonPath.read(queryJSON,
 				"$[?(@['METRIC_NAME'] == 'SEIFA_METRIC')].METRIC_VALUE[0]");
+		String seifaOp = JsonPath.read(queryJSON,
+				"[?(@['METRIC_NAME'] == 'SEIFA_METRIC')].OPERATOR[0]");
+		//LOGGER.info("SEIFA OP {}", seifaOp);
 		String diabetesValue = JsonPath.read(queryJSON,
 				"$[?(@['METRIC_NAME'] == 'TYPE2_DIABETES')].METRIC_VALUE[0]");
+		String diabetesOp = JsonPath.read(queryJSON,
+				"[?(@['METRIC_NAME'] == 'TYPE2_DIABETES')].OPERATOR[0]");
 		String depressionValue = JsonPath.read(queryJSON,
 				"$[?(@['METRIC_NAME'] == 'DEPRESSION')].METRIC_VALUE[0]");
+		String depressionOp = JsonPath.read(queryJSON,
+				"[?(@['METRIC_NAME'] == 'DEPRESSION')].OPERATOR[0]");
 		String obesityValue = JsonPath.read(queryJSON,
 				"$[?(@['METRIC_NAME'] == 'OBESITY')].METRIC_VALUE[0]");
+		String obesityOp = JsonPath.read(queryJSON,
+				"[?(@['METRIC_NAME'] == 'OBESITY')].OPERATOR[0]");
 		String smokingValue = JsonPath.read(queryJSON,
 				"$[?(@['METRIC_NAME'] == 'SMOKING')].METRIC_VALUE[0]");
+		String smokingOp = JsonPath.read(queryJSON,
+				"[?(@['METRIC_NAME'] == 'SMOKING')].OPERATOR[0]");
 		LOGGER.info("seifa val:" + seifaVal);
 		String gpDistance = JsonPath
 				.read(queryJSON,
@@ -75,14 +87,6 @@ public class HealthFilter {
 				.getDefaultFactory().getDataStore(LayerMapping.SMOKING_Layer))
 				.getFeatureSource();
 
-		// /
-//		String gpBuffersFile = LayerMapping.getPath("GP_Buffers" + gpDistance
-//				+ "m");
-//		// .replace("DIST", gpDistance);
-//		LOGGER.info("Buffers file?" + gpBuffersFile);
-//		SimpleFeatureSource gpSource = FileDataStoreFinder.getDataStore(
-//				new File(gpBuffersFile)).getFeatureSource();
-
 		SimpleFeatureSource gpSource = ((FileDataStore) Config
 				.getDefaultFactory().getDataStore(
 						"GP_Buffers_" + gpDistance + "m")).getFeatureSource();
@@ -90,22 +94,22 @@ public class HealthFilter {
 		List<SimpleFeatureCollection> layers = new ArrayList<SimpleFeatureCollection>();
 
 		SimpleFeatureCollection seifaFeatures = getAttributeFiltered_FeatureCollection(
-				seifaSource, MetricOperator.GREATERTHAN, seifaVal, "IRSD_Decil");
+				seifaSource, seifaOp, seifaVal, "IRSD_Decil");
 		layers.add(seifaFeatures);
 		SimpleFeatureCollection diabetesFeatures = getAttributeFiltered_FeatureCollection(
-				diabetesSource, MetricOperator.GREATERTHAN, diabetesValue,
+				diabetesSource, diabetesOp, diabetesValue,
 				"RatePer100");
 		layers.add(diabetesFeatures);
 		SimpleFeatureCollection depressionFeatures = getAttributeFiltered_FeatureCollection(
-				depressionSource, MetricOperator.GREATERTHAN, depressionValue,
+				depressionSource, depressionOp, depressionValue,
 				"RatePer100");
 		layers.add(depressionFeatures);
 		SimpleFeatureCollection obesityFeatures = getAttributeFiltered_FeatureCollection(
-				obesitySource, MetricOperator.GREATERTHAN, obesityValue,
+				obesitySource, obesityOp, obesityValue,
 				"ObesePeopl");
 		layers.add(obesityFeatures);
 		SimpleFeatureCollection smokingFeatures = getAttributeFiltered_FeatureCollection(
-				smokingSource, MetricOperator.GREATERTHAN, smokingValue,
+				smokingSource, smokingOp, smokingValue,
 				"SmokePop");
 		layers.add(smokingFeatures);
 		SimpleFeatureCollection gpBuffers = gpSource.getFeatures();
@@ -139,17 +143,36 @@ public class HealthFilter {
 	}
 
 	private SimpleFeatureCollection getAttributeFiltered_FeatureCollection(
-			SimpleFeatureSource featureSource, MetricOperator operator,
+			SimpleFeatureSource featureSource, String operator,
 			String metricValue, String attributeName) throws Exception {
 
 		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 		Query query = new Query();
 
-		PropertyIsGreaterThan filter = ff.greater(ff.property(attributeName),
-				ff.literal(metricValue));
-
-		query.setFilter(filter);
-
+		if (operator.equals("EQUAL_OR_GREATER_THAN")) {
+			PropertyIsGreaterThanOrEqualTo filter = ff.greaterOrEqual(
+					ff.property(attributeName), ff.literal(metricValue));
+			query.setFilter(filter);
+		}
+		if (operator.equals("EQUAL_OR_LESS_THAN")) {
+			PropertyIsLessThanOrEqualTo filter = ff.lessOrEqual(
+					ff.property(attributeName), ff.literal(metricValue));
+			query.setFilter(filter);
+		}
+		if (operator.equals("GREATER_THAN")) {
+			PropertyIsGreaterThan filter = ff.greater(ff.property(attributeName), ff.literal(metricValue));
+			query.setFilter(filter);
+		}
+		if (operator.equals("LESS_THAN")) {
+			PropertyIsLessThan filter = ff.less(
+					ff.property(attributeName), ff.literal(metricValue));
+			query.setFilter(filter);
+		}
+		if (operator.equals("EQUAL")) {
+			PropertyIsEqualTo filter = ff.equals(
+					ff.property(attributeName), ff.literal(metricValue));
+			query.setFilter(filter);
+		}
 		// get a feature collection of filtered features
 		// SimpleFeatureCollection fCollection = featureSource.getFeatures();
 		SimpleFeatureCollection fCollection = featureSource.getFeatures(query);
