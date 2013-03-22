@@ -13,6 +13,7 @@ public class LayerMapping {
     public static final String GENERAL_PRACTICE_Layer = "GENERAL_PRACTICE_Layer";
     public static final String COMMUNITY_HEALTH_CENTRE_Layer = "COMMUNITY_HEALTH_CENTRE_Layer";
     public static final String MENTAL_HEALTH_SERVICE_PROVIDER_Layer = "MENTAL_HEALTH_SERVICE_PROVIDER_Layer";
+    public static final String GP_Buffers = "GP_Buffers";
 
     private static Map<String, String> shapeFileLocationMap;
     static {
@@ -31,6 +32,7 @@ public class LayerMapping {
 		+ "CommHealthCentres_ML.shp");
 	shapeFileLocationMap.put(MENTAL_HEALTH_SERVICE_PROVIDER_Layer,
 		"datasets/" + "MentalHealth.shp");
+	shapeFileLocationMap.put(GP_Buffers, "datasets/DistFromCommHealth/" + "DISTm.shp");
     }
 
     public static String getPath(String layerName) {
