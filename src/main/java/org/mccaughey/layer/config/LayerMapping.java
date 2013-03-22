@@ -13,7 +13,18 @@ public class LayerMapping {
 	public static final String GENERAL_PRACTICE_Layer = "GENERAL_PRACTICE_Layer";
 	public static final String COMMUNITY_HEALTH_CENTRE_Layer = "COMMUNITY_HEALTH_CENTRE_Layer";
 	public static final String MENTAL_HEALTH_SERVICE_PROVIDER_Layer = "MENTAL_HEALTH_SERVICE_PROVIDER_Layer";
-	public static final String GP_Buffers = "GP_Buffers";
+	public static final String GP_Buffers_100m = "GP_Buffers_100m";
+	public static final String GP_Buffers_200m = "GP_Buffers_200m";
+	public static final String GP_Buffers_300m = "GP_Buffers_300m";
+	public static final String GP_Buffers_400m = "GP_Buffers_400m";
+	public static final String GP_Buffers_500m = "GP_Buffers_500m";
+	public static final String GP_Buffers_600m = "GP_Buffers_600m";
+	public static final String GP_Buffers_700m = "GP_Buffers_700m";
+	public static final String GP_Buffers_800m = "GP_Buffers_800m";
+	public static final String GP_Buffers_900m = "GP_Buffers_900m";
+	public static final String GP_Buffers_1000m = "GP_Buffers_1000m";
+	public static final String GP_Buffers_1100m = "GP_Buffers_1100m";
+	public static final String GP_Buffers_1200m = "GP_Buffers_1200m";
 
 	private static Map<String, String> shapeFileLocationMap;
 	static {
@@ -35,8 +46,30 @@ public class LayerMapping {
 				+ "CommHealthCentres_ML.shp");
 		shapeFileLocationMap.put(MENTAL_HEALTH_SERVICE_PROVIDER_Layer,
 				"datasets/" + "MentalHealth.shp");
-		shapeFileLocationMap.put(GP_Buffers, "datasets/DistFromCommHealth/"
-				+ "DISTm.shp");
+		shapeFileLocationMap.put(GP_Buffers_100m, "datasets/DistFromCommHealth/"
+				+ "100m.shp");
+		shapeFileLocationMap.put(GP_Buffers_200m, "datasets/DistFromCommHealth/"
+				+ "200m.shp");
+		shapeFileLocationMap.put(GP_Buffers_300m, "datasets/DistFromCommHealth/"
+				+ "300m.shp");
+		shapeFileLocationMap.put(GP_Buffers_400m, "datasets/DistFromCommHealth/"
+				+ "400m.shp");
+		shapeFileLocationMap.put(GP_Buffers_500m, "datasets/DistFromCommHealth/"
+				+ "500m.shp");
+		shapeFileLocationMap.put(GP_Buffers_600m, "datasets/DistFromCommHealth/"
+				+ "600m.shp");
+		shapeFileLocationMap.put(GP_Buffers_700m, "datasets/DistFromCommHealth/"
+				+ "700m.shp");
+		shapeFileLocationMap.put(GP_Buffers_800m, "datasets/DistFromCommHealth/"
+				+ "800m.shp");
+		shapeFileLocationMap.put(GP_Buffers_900m, "datasets/DistFromCommHealth/"
+				+ "900m.shp");
+		shapeFileLocationMap.put(GP_Buffers_1000m, "datasets/DistFromCommHealth/"
+				+ "1000m.shp");
+		shapeFileLocationMap.put(GP_Buffers_1100m, "datasets/DistFromCommHealth/"
+				+ "1100m.shp");
+		shapeFileLocationMap.put(GP_Buffers_1200m, "datasets/DistFromCommHealth/"
+				+ "1200m.shp");
 	}
 
 	public static String getPath(String layerName) {

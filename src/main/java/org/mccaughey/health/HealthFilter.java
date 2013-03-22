@@ -75,12 +75,18 @@ public class HealthFilter {
 				.getDefaultFactory().getDataStore(LayerMapping.SMOKING_Layer))
 				.getFeatureSource();
 
-		String gpBuffersFile = LayerMapping.getPath(LayerMapping.GP_Buffers)
-				.replace("DIST", gpDistance);
-		LOGGER.info("Buffers file?" + gpBuffersFile);
-		SimpleFeatureSource gpSource = FileDataStoreFinder.getDataStore(
-				new File(gpBuffersFile)).getFeatureSource();
+		// /
+//		String gpBuffersFile = LayerMapping.getPath("GP_Buffers" + gpDistance
+//				+ "m");
+//		// .replace("DIST", gpDistance);
+//		LOGGER.info("Buffers file?" + gpBuffersFile);
+//		SimpleFeatureSource gpSource = FileDataStoreFinder.getDataStore(
+//				new File(gpBuffersFile)).getFeatureSource();
 
+		SimpleFeatureSource gpSource = ((FileDataStore) Config
+				.getDefaultFactory().getDataStore(
+						"GP_Buffers_" + gpDistance + "m")).getFeatureSource();
+		// /
 		List<SimpleFeatureCollection> layers = new ArrayList<SimpleFeatureCollection>();
 
 		SimpleFeatureCollection seifaFeatures = getAttributeFiltered_FeatureCollection(
@@ -103,16 +109,17 @@ public class HealthFilter {
 				"SmokePop");
 		layers.add(smokingFeatures);
 		SimpleFeatureCollection gpBuffers = gpSource.getFeatures();
-		//layers.add(gpBuffers);
+		// layers.add(gpBuffers);
 
 		SimpleFeatureCollection filteredFeatures = null; // = seifaFeatures;
 		for (SimpleFeatureCollection intersectFeatures : layers) {
 			LOGGER.info("Layer size {}", intersectFeatures.size());
-			if ((filteredFeatures == null)) { // && (intersectFeatures.size() > 0)) {
+			if ((filteredFeatures == null)) { // && (intersectFeatures.size() >
+												// 0)) {
 				filteredFeatures = intersectFeatures;
 				LOGGER.info("Filtered features: {}", filteredFeatures.size());
 			} else if ((filteredFeatures != null)) {
-				//	&& (intersectFeatures.size() > 0)) {
+				// && (intersectFeatures.size() > 0)) {
 				filteredFeatures = intersection(filteredFeatures,
 						intersectFeatures);
 				LOGGER.info("Filtered/intersected features: {}",
@@ -121,7 +128,8 @@ public class HealthFilter {
 
 		}
 		LOGGER.info("Intersected total features: {}", filteredFeatures.size());
-		SimpleFeatureCollection gpExcluded = difference(filteredFeatures,gpBuffers);
+		SimpleFeatureCollection gpExcluded = difference(filteredFeatures,
+				gpBuffers);
 		LOGGER.info("Filtered total features: {}", gpExcluded.size());
 		return gpExcluded;
 		// return
