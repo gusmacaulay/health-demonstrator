@@ -30,7 +30,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										id : 'checkbox11',
 										labelSeparator : '',
 										hideLabel : true,
-										boxLabel : 'SEIFA Index of Relative Sociao-Economic Disadvantage',
+										boxLabel : 'SEIFA Index of Relative Socio-Economic Disadvantage',
 										fieldLabel : 'text',
 										checked : true,
 										colspan : 7,
@@ -175,7 +175,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										id : 'checkbox13',
 										labelSeparator : '',
 										hideLabel : true,
-										boxLabel : 'Depression(Mood Problems)',
+										boxLabel : 'Depression (Mood Problems)',
 										fieldLabel : 'text',
 										colspan : 5,
 										checked : true,
@@ -463,27 +463,27 @@ org.aurin.demonstratortools.health.mainUI = function() {
 									},
 									{
 										xtype : 'label',
-										text : 'Area with no access to GP within',
+										text : 'No access to GP within:',
 										margins : '0 0 0 10',
 										colspan : 7
 									},
-									{
-										xtype : "combo",
-										id : 'combo21',
-										hideLabel : true,
-										value : org.aurin.demonstratortools.health.constants.operator.LESS_THAN,
-
-										store : org.aurin.demonstratortools.health.model.operator_store,
-										width : 40,
-										disabled : true,
-										colspan : 1
-									},
+//									{
+//										xtype : "combo",
+//										id : 'combo21',
+//										hideLabel : true,
+//										value : org.aurin.demonstratortools.health.constants.operator.LESS_THAN,
+//
+//										store : org.aurin.demonstratortools.health.model.operator_store,
+//										width : 40,
+//										disabled : true,
+//										colspan : 1
+//									},
 									{
 										xtype : "textfield",
 										id : 'slider_value21',
 										readOnly : true,
 										width : 40,
-										disabled : true,
+										disabled : false,
 										colspan : 1
 									},
 									{
@@ -496,7 +496,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										increment : 100,
 										minValue : 100,
 										maxValue : 1200,
-										disabled : true,
+										disabled : false,
 										listeners : {
 											change : function(select, thumb,
 													newval, oldval) {
