@@ -149,8 +149,9 @@ public class HealthFilter {
 				.read(queryJSON,
 						"$[?(@['METRIC_NAME'] == 'BULK_BILLING_AND_FEE_BASED_SERVICE')].METRIC_INCLUSION[0]")));
 		if (BULK_BILLING_AND_FEE_BASED_SERVICE) {
-			filters.add(ff.equal(ff.property("FreeProvis"),
-					ff.literal("\"Fees & Bulk Billing\"")));
+			filters.add(ff.notEqual(ff.property("FreeProvis"),
+					ff.literal("Other")));
+			
 		}
 		Boolean BULK_BILLING_ONLY = ((Boolean) (JsonPath
 				.read(queryJSON,
