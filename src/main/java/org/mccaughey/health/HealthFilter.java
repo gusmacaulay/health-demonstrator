@@ -46,7 +46,7 @@ public class HealthFilter {
 				"$[?(@['METRIC_NAME'] == 'SEIFA_METRIC')].METRIC_VALUE[0]");
 		String seifaOp = JsonPath.read(queryJSON,
 				"[?(@['METRIC_NAME'] == 'SEIFA_METRIC')].OPERATOR[0]");
-		//LOGGER.info("SEIFA OP {}", seifaOp);
+		// LOGGER.info("SEIFA OP {}", seifaOp);
 		String diabetesValue = JsonPath.read(queryJSON,
 				"$[?(@['METRIC_NAME'] == 'TYPE2_DIABETES')].METRIC_VALUE[0]");
 		String diabetesOp = JsonPath.read(queryJSON,
@@ -97,22 +97,19 @@ public class HealthFilter {
 				seifaSource, seifaOp, seifaVal, "IRSD_Decil");
 		layers.add(seifaFeatures);
 		SimpleFeatureCollection diabetesFeatures = getAttributeFiltered_FeatureCollection(
-				diabetesSource, diabetesOp, diabetesValue,
-				"RatePer100");
+				diabetesSource, diabetesOp, diabetesValue, "RatePer100");
 		layers.add(diabetesFeatures);
 		SimpleFeatureCollection depressionFeatures = getAttributeFiltered_FeatureCollection(
-				depressionSource, depressionOp, depressionValue,
-				"RatePer100");
+				depressionSource, depressionOp, depressionValue, "RatePer100");
 		layers.add(depressionFeatures);
 		SimpleFeatureCollection obesityFeatures = getAttributeFiltered_FeatureCollection(
-				obesitySource, obesityOp, obesityValue,
-				"ObesePeopl");
+				obesitySource, obesityOp, obesityValue, "ObesePeopl");
 		layers.add(obesityFeatures);
 		SimpleFeatureCollection smokingFeatures = getAttributeFiltered_FeatureCollection(
-				smokingSource, smokingOp, smokingValue,
-				"SmokePop");
+				smokingSource, smokingOp, smokingValue, "SmokePop");
 		layers.add(smokingFeatures);
-		SimpleFeatureCollection gpBuffers = gpSource.getFeatures();
+		SimpleFeatureCollection gpBuffers = filterGPAttributes(
+				gpSource, queryJSON);
 		// layers.add(gpBuffers);
 
 		SimpleFeatureCollection filteredFeatures = null; // = seifaFeatures;
@@ -142,6 +139,61 @@ public class HealthFilter {
 
 	}
 
+	private SimpleFeatureCollection filterGPAttributes(
+			SimpleFeatureSource source, String queryJSON) throws IOException {
+
+		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+		Query query = new Query();
+		List<Filter> filters = new ArrayList<Filter>();
+		Boolean BULK_BILLING_AND_FEE_BASED_SERVICE = ((Boolean) (JsonPath
+				.read(queryJSON,
+						"$[?(@['METRIC_NAME'] == 'BULK_BILLING_AND_FEE_BASED_SERVICE')].METRIC_INCLUSION[0]")));
+		if (BULK_BILLING_AND_FEE_BASED_SERVICE) {
+			filters.add(ff.equal(ff.property("FreeProvis"),
+					ff.literal("\"Fees & Bulk Billing\"")));
+		}
+		Boolean BULK_BILLING_ONLY = ((Boolean) (JsonPath
+				.read(queryJSON,
+						"$[?(@['METRIC_NAME'] == 'BULK_BILLING_ONLY')].METRIC_INCLUSION[0]")));
+		if (BULK_BILLING_ONLY) {
+			filters.add(ff.equal(ff.property("FreeProvis"), ff.literal("\"Bulkbilling only\"")));
+		}
+		Boolean FEE_ONLY = ((Boolean) (JsonPath.read(queryJSON,
+				"$[?(@['METRIC_NAME'] == 'FEE_ONLY')].METRIC_INCLUSION[0]")));
+		if (FEE_ONLY) {
+			filters.add(ff.equal(ff.property("FreeProvis"), ff.literal("Fee only")));
+		}
+		Boolean AFTER_5_UP_UNTIL_8_PM_ON_WEEKDAYS = ((Boolean) (JsonPath
+				.read(queryJSON,
+						"$[?(@['METRIC_NAME'] == 'AFTER_5_UP_UNTIL_8_PM_ON_WEEKDAYS')].METRIC_INCLUSION[0]")));
+		if (AFTER_5_UP_UNTIL_8_PM_ON_WEEKDAYS) {
+			filters.add(ff.equal(ff.property("FreeProvis"), ff.literal("Fee only")));
+		}
+//		Boolean AFTER_8_PM_ON_WEEKDAYS = ((Boolean) (JsonPath
+//				.read(queryJSON,
+//						"$[?(@['METRIC_NAME'] == 'AFTER_8_PM_ON_WEEKDAYS')].METRIC_INCLUSION[0]")));
+//		Boolean ANY_SATURDAY_SERVICE_AFTER_12_NOON = ((Boolean) (JsonPath
+//				.read(queryJSON,
+//						"$[?(@['METRIC_NAME'] == 'ANY_SATURDAY_SERVICE_AFTER_12_NOON')].METRIC_INCLUSION[0]")));
+		Boolean ANY_SUNDAY_SERVICE = ((Boolean) (JsonPath
+				.read(queryJSON,
+						"$[?(@['METRIC_NAME'] == 'ANY_SUNDAY_SERVICE')].METRIC_INCLUSION[0]")));
+		if (ANY_SUNDAY_SERVICE) {
+			filters.add(ff.notEqual(ff.property("Sunday"), ff.literal("None")));
+		}
+//		Boolean COMMUNITY_HEALTH_CENTRE = ((Boolean) (JsonPath
+//				.read(queryJSON,
+//						"$[?(@['METRIC_NAME'] == 'COMMUNITY_HEALTH_CENTRE')].METRIC_INCLUSION[0]")));
+//		Boolean MENTAL_HEALTH_SERVICE_PROVIDER = ((Boolean) (JsonPath
+//				.read(queryJSON,
+//						"$[?(@['METRIC_NAME'] == 'MENTAL_HEALTH_SERVICE_PROVIDER')].METRIC_INCLUSION[0]")));
+		query.setFilter(ff.and(filters));
+		LOGGER.info("Query: {}", query.toString());
+		SimpleFeatureCollection gpClinics = source.getFeatures(query);
+		LOGGER.info("Found {} gp clinics", gpClinics.size());
+		return gpClinics;
+	}
+
 	private SimpleFeatureCollection getAttributeFiltered_FeatureCollection(
 			SimpleFeatureSource featureSource, String operator,
 			String metricValue, String attributeName) throws Exception {
@@ -160,17 +212,18 @@ public class HealthFilter {
 			query.setFilter(filter);
 		}
 		if (operator.equals("GREATER_THAN")) {
-			PropertyIsGreaterThan filter = ff.greater(ff.property(attributeName), ff.literal(metricValue));
+			PropertyIsGreaterThan filter = ff.greater(
+					ff.property(attributeName), ff.literal(metricValue));
 			query.setFilter(filter);
 		}
 		if (operator.equals("LESS_THAN")) {
-			PropertyIsLessThan filter = ff.less(
-					ff.property(attributeName), ff.literal(metricValue));
+			PropertyIsLessThan filter = ff.less(ff.property(attributeName),
+					ff.literal(metricValue));
 			query.setFilter(filter);
 		}
 		if (operator.equals("EQUAL")) {
-			PropertyIsEqualTo filter = ff.equals(
-					ff.property(attributeName), ff.literal(metricValue));
+			PropertyIsEqualTo filter = ff.equals(ff.property(attributeName),
+					ff.literal(metricValue));
 			query.setFilter(filter);
 		}
 		// get a feature collection of filtered features

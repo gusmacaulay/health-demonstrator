@@ -46,29 +46,29 @@ public class LayerMapping {
 				+ "CommHealthCentres_ML.shp");
 		shapeFileLocationMap.put(MENTAL_HEALTH_SERVICE_PROVIDER_Layer,
 				"datasets/" + "MentalHealth.shp");
-		shapeFileLocationMap.put(GP_Buffers_100m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_100m, "datasets/DistFromGPs/"
 				+ "100m.shp");
-		shapeFileLocationMap.put(GP_Buffers_200m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_200m, "datasets/DistFromGPs/"
 				+ "200m.shp");
-		shapeFileLocationMap.put(GP_Buffers_300m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_300m, "datasets/DistFromGPs/"
 				+ "300m.shp");
-		shapeFileLocationMap.put(GP_Buffers_400m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_400m, "datasets/DistFromGPs/"
 				+ "400m.shp");
-		shapeFileLocationMap.put(GP_Buffers_500m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_500m, "datasets/DistFromGPs/"
 				+ "500m.shp");
-		shapeFileLocationMap.put(GP_Buffers_600m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_600m, "datasets/DistFromGPs/"
 				+ "600m.shp");
-		shapeFileLocationMap.put(GP_Buffers_700m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_700m, "datasets/DistFromGPs/"
 				+ "700m.shp");
-		shapeFileLocationMap.put(GP_Buffers_800m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_800m, "datasets/DistFromGPs/"
 				+ "800m.shp");
-		shapeFileLocationMap.put(GP_Buffers_900m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_900m, "datasets/DistFromGPs/"
 				+ "900m.shp");
-		shapeFileLocationMap.put(GP_Buffers_1000m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_1000m, "datasets/DistFromGPs/"
 				+ "1000m.shp");
-		shapeFileLocationMap.put(GP_Buffers_1100m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_1100m, "datasets/DistFromGPs/"
 				+ "1100m.shp");
-		shapeFileLocationMap.put(GP_Buffers_1200m, "datasets/DistFromCommHealth/"
+		shapeFileLocationMap.put(GP_Buffers_1200m, "datasets/DistFromGPs/"
 				+ "1200m.shp");
 	}
 

@@ -467,23 +467,23 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										margins : '0 0 0 10',
 										colspan : 7
 									},
-//									{
-//										xtype : "combo",
-//										id : 'combo21',
-//										hideLabel : true,
-//										value : org.aurin.demonstratortools.health.constants.operator.LESS_THAN,
-//
-//										store : org.aurin.demonstratortools.health.model.operator_store,
-//										width : 40,
-//										disabled : true,
-//										colspan : 1
-//									},
+									{
+										xtype : "combo",
+										id : 'combo21',
+										hideLabel : true,
+										value : org.aurin.demonstratortools.health.constants.operator.LESS_THAN,
+
+										store : org.aurin.demonstratortools.health.model.operator_store,
+										width : 40,
+										disabled : true,
+										colspan : 1
+									},
 									{
 										xtype : "textfield",
 										id : 'slider_value21',
 										readOnly : true,
 										width : 40,
-										disabled : false,
+										disabled : true,
 										colspan : 1
 									},
 									{
@@ -496,7 +496,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										increment : 100,
 										minValue : 100,
 										maxValue : 1200,
-										disabled : false,
+										disabled : true,
 										listeners : {
 											change : function(select, thumb,
 													newval, oldval) {
