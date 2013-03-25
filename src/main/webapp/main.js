@@ -68,7 +68,8 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										readOnly : true,
 										width : 40,
 										margins : '10',
-										colspan : 1
+										colspan : 1,
+										value : 10
 									},
 									{
 										xtype : 'slider',
@@ -144,7 +145,8 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										id : 'slider_value12',
 										readOnly : true,
 										width : 40,
-										colspan : 1
+										colspan : 1,
+										value : 5
 									},
 									{
 										xtype : 'slider',
@@ -220,7 +222,8 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										id : 'slider_value13',
 										readOnly : true,
 										width : 40,
-										colspan : 1
+										colspan : 1,
+										value : 10
 									},
 									{
 										xtype : 'slider',
@@ -298,7 +301,8 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										readOnly : true,
 										width : 40,
 										disabled : true,
-										colspan : 1
+										colspan : 1,
+										value : 20
 									},
 									{
 										xtype : 'slider',
@@ -377,7 +381,8 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										readOnly : true,
 										width : 40,
 										disabled : true,
-										colspan : 1
+										colspan : 1,
+										value : 20
 									},
 									{
 										xtype : 'slider',
@@ -440,6 +445,7 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										boxLabel : 'General Practice',
 										fieldLabel : 'text',
 										colspan : 12,
+										
 										checked : false,
 										listeners : {
 											change : {
@@ -484,7 +490,8 @@ org.aurin.demonstratortools.health.mainUI = function() {
 										readOnly : true,
 										width : 40,
 										disabled : true,
-										colspan : 1
+										colspan : 1,
+										value : 100
 									},
 									{
 										xtype : 'slider',
