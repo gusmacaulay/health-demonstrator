@@ -15,12 +15,10 @@ window['map_init'] = function() {
 	});
 	var osm = new OpenLayers.Layer.OSM();
 
-	var geographic = new OpenLayers.Projection("EPSG:4326");
 	var mercator = new OpenLayers.Projection("EPSG:900913");
 	var saveStrategy = new OpenLayers.Strategy.Save();
 
 	lyr_results = new OpenLayers.Layer.Vector("Results", {
-		//projection : geographic,
 		projection : mercator,
 		strategies : [ new OpenLayers.Strategy.Fixed() ],
 
