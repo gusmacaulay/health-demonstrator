@@ -97,24 +97,6 @@ window['map_init'] = function() {
 	map.addLayers([osm, lyr_SEIFA, lyr_GP, wfs, lyr_results]);
 
 	map.setCenter(new OpenLayers.LonLat(16133371, -4544265), 12);
-	/*
-	 * map.setCenter( new OpenLayers.LonLat(-37.52372699908832,
-	 * 144.583322).transform( new OpenLayers.Projection("EPSG:4328"),
-	 * map.getProjectionObject() ), 6 );
-	 */
-	// //
-	/*
-	 * window['mapPanel'] = new GeoExt.MapPanel({ title: "GeoExt MapPanel",
-	 * renderTo: "mappanel", stateId: "mappanel", height: 400, width: 600, map:
-	 * map, center: new OpenLayers.LonLat(16093371, -4537265), zoom: 10, //
-	 * getState and applyState are overloaded so panel size // can be stored and
-	 * restored getState: function() { var state =
-	 * GeoExt.MapPanel.prototype.getState.apply(this); state.width =
-	 * this.getSize().width; state.height = this.getSize().height; return state; },
-	 * applyState: function(state) {
-	 * GeoExt.MapPanel.prototype.applyState.apply(this, arguments); this.width =
-	 * state.width; this.height = state.height; } });
-	 */
 
-}
+};
 window['map_init']();
