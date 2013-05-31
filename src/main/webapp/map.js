@@ -13,8 +13,10 @@ window['map_init'] = function() {
 	map = new OpenLayers.Map('mappanel', {
 		controls : controls
 	});
+	
 	var osm = new OpenLayers.Layer.OSM();
-
+	osm.setIsBaseLayer(true);
+	
 	var mercator = new OpenLayers.Projection("EPSG:900913");
 	var saveStrategy = new OpenLayers.Strategy.Save();
 
@@ -44,7 +46,6 @@ window['map_init'] = function() {
 	lyr_SEIFA = new OpenLayers.Layer.WMS("SEIFA",
 			"/health-demonstrator/geoserver/wms", {
 				LAYERS : 'CSDILA_local:seifa',
-				srsName : "EPSG:900913",
 				STYLES : '',
 				format : 'image/png',
 				tiled : true,
@@ -58,11 +59,11 @@ window['map_init'] = function() {
 	lyr_SEIFA.setIsBaseLayer(false);
 	lyr_SEIFA.setVisibility(false);
 	
-	//define GPs layers
+	
+	//define GPs layers 		srsName : "EPSG:900913",
 	lyr_GP = new OpenLayers.Layer.WMS("GP",
 			"/health-demonstrator/geoserver/wms", {
 				LAYERS : 'CSDILA_local:gps_inwmml',
-				srsName : "EPSG:900913",
 				STYLES : '',
 				format : 'image/png',
 				tiled : true,
@@ -94,7 +95,7 @@ window['map_init'] = function() {
 						})
 			});
 
-	map.addLayers([osm, lyr_SEIFA, lyr_GP, wfs, lyr_results]);
+	map.addLayers([osm,lyr_results, lyr_SEIFA, lyr_GP, wfs]);
 
 	map.setCenter(new OpenLayers.LonLat(16133371, -4544265), 12);
 
