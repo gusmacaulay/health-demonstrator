@@ -9,7 +9,7 @@ window['map_init'] = function() {
 			new OpenLayers.Control.Permalink('permalink'),
 			new OpenLayers.Control.MousePosition(),
 			new OpenLayers.Control.OverviewMap(),
-			new OpenLayers.Control.KeyboardDefaults() ];
+			new OpenLayers.Control.KeyboardDefaults()];
 	map = new OpenLayers.Map('mappanel', {
 		controls : controls
 	});
@@ -17,8 +17,9 @@ window['map_init'] = function() {
 
 	var geographic = new OpenLayers.Projection("EPSG:4326");
 	var mercator = new OpenLayers.Projection("EPSG:900913");
+	var saveStrategy = new OpenLayers.Strategy.Save();
 
-	window['paths'] = new OpenLayers.Layer.Vector("Regions", {
+	lyr_results = new OpenLayers.Layer.Vector("Results", {
 		//projection : geographic,
 		projection : mercator,
 		strategies : [ new OpenLayers.Strategy.Fixed() ],
@@ -41,7 +42,61 @@ window['map_init'] = function() {
 		renderers : [ "Canvas", "SVG", "VML" ]
 	});
 
-	map.addLayers([ osm, window['paths'] ]);
+	// define SEIFA layers
+	lyr_SEIFA = new OpenLayers.Layer.WMS("SEIFA",
+			"/health-demonstrator/geoserver/wms", {
+				LAYERS : 'CSDILA_local:seifa',
+				srsName : "EPSG:900913",
+				STYLES : '',
+				format : 'image/png',
+				tiled : true,
+				transparent : true,
+				tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
+			}, {
+				buffer : 0,
+				displayOutsideMaxExtent : true,
+				reproject : true
+			});
+	lyr_SEIFA.setIsBaseLayer(false);
+	lyr_SEIFA.setVisibility(false);
+	
+	//define GPs layers
+	lyr_GP = new OpenLayers.Layer.WMS("GP",
+			"/health-demonstrator/geoserver/wms", {
+				LAYERS : 'CSDILA_local:gps_inwmml',
+				srsName : "EPSG:900913",
+				STYLES : '',
+				format : 'image/png',
+				tiled : true,
+				transparent : true,
+				tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
+			}, {
+				buffer : 0,
+				displayOutsideMaxExtent : true,
+				reproject : true
+			});
+	lyr_GP.setIsBaseLayer(false);
+	lyr_GP.setVisibility(false);
+	
+	
+	wfs = new OpenLayers.Layer.Vector(
+			"gp-wfs",
+			{
+				strategies : [ new OpenLayers.Strategy.BBOX(), saveStrategy ],
+				projection : mercator,
+				styleMap : '',
+				protocol : new OpenLayers.Protocol.WFS(
+						{
+							version : "1.1.0",
+							srsName : "EPSG:900913",
+							url : "/health-demonstrator/geoserver/wfs",
+							featureType : "gps_inwmml",
+							geometryName : "geom",
+							schema : "/health-demonstrator/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=CSDILA_local:gps_inwmml"
+						})
+			});
+
+	map.addLayers([osm, lyr_SEIFA, lyr_GP, wfs, lyr_results]);
 
 	map.setCenter(new OpenLayers.LonLat(16133371, -4544265), 12);
 	/*

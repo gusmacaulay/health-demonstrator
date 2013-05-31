@@ -1,8 +1,10 @@
 package org.mccaughey.health;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -63,23 +65,45 @@ public class HealthFilterResource {
 
     SimpleFeatureCollection outputfeatures = healthFilter
         .filter(uiParameters.get("params").toString().replace("=",":")); //convert back to json
+    if(outputfeatures.size()>0){
     CoordinateReferenceSystem fromCRS = outputfeatures.getSchema()
         .getCoordinateReferenceSystem();
     CoordinateReferenceSystem toCRS = CRS.decode("EPSG:3857");
-    GeoJSONUtility.writeFeatures(reproject(outputfeatures, fromCRS, toCRS),
-        new FileOutputStream(new File("out.geojson")));
+    //File f = new File(request.getSession().getServletContext().getRealPath("/")+"\\"+request.getSession().getAttribute("rdmOutFileName"));
+    //if(f.exists())
+    //{
+    //	f.delete();
+    //}
+    //String rdmOutFileName =java.util.UUID.randomUUID().toString()+"_out.geojson";
+    //request.getSession().setAttribute("rdmOutFileName", rdmOutFileName);
+    //GeoJSONUtility.writeFeatures(reproject(outputfeatures, fromCRS, toCRS),new FileOutputStream(new File(request.getSession().getServletContext().getRealPath("/")+"\\"+rdmOutFileName)));
 
-
+    // Mod by Benny, skip using temporary file
+    String tmpRltJSONString = GeoJSONUtility.createFeaturesJSONString(reproject(outputfeatures, fromCRS, toCRS));
+    request.getSession().setAttribute("tmpRltJSONString", tmpRltJSONString);
+    }
+    else
+    {
+    	 request.getSession().setAttribute("tmpRltJSONString", "");
+    }
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "filterResult", produces = "application/json")
   public void getFilterResult(HttpServletRequest request,
       HttpServletResponse response) throws Exception {
-    
-      // Write file contents to output stream...
-      
-      StreamUtils.copy(new FileInputStream(new File("out.geojson")), response.getOutputStream());
+ 
+	  // Mod by Benny, skip using temporary file
+	  if(request.getSession().getAttribute("tmpRltJSONString")!=null){
+		  InputStream instream = new ByteArrayInputStream(request.getSession().getAttribute("tmpRltJSONString").toString().getBytes());
+		  StreamUtils.copy(instream, response.getOutputStream());
+	  } else
+	  {
+		  //StreamUtils.copy(null, response.getOutputStream());
+	  }
+	  // Write file contents to output stream...
 
+      //StreamUtils.copy(new FileInputStream(new File(request.getSession().getServletContext().getRealPath("/")+"\\"+request.getSession().getAttribute("rdmOutFileName"))), response.getOutputStream());
+      
 //   // LOGGER.info(request.getSession().getAttribute("uiParameters"));
 //    System.out.println("getFilterResult");
 //    Object uiParameteresObj = request.getSession()
