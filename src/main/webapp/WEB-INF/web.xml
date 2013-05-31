@@ -14,7 +14,26 @@
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
+	<servlet>
+		<servlet-name>GeoserverProxy</servlet-name>
+		<servlet-class>org.mccaughey.proxy.servlet.ProxyServletWithAuth</servlet-class>
+		<init-param>
+			<param-name>ProxyTo</param-name>
+			<param-value>http://192.43.209.39:8080/geoserver</param-value>
+		</init-param>
+		<init-param>
+			<param-name>Prefix</param-name>
+			<param-value>/geoserver</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>GeoserverProxy</servlet-name>
+		<url-pattern>/geoserver/*</url-pattern>
+	</servlet-mapping>
+	
+	
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.html</url-pattern>
@@ -44,29 +63,7 @@
 		<param-value>/WEB-INF/mvc-dispatcher-servlet.xml</param-value>
 	</context-param>
 
-
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>GeoserverProxy</servlet-name> -->
-<!-- 		<servlet-class>org.eclipse.jetty.servlets.ProxyServlet$Transparent</servlet-class> -->
-		
-<!-- 		<init-param> -->
-<!-- 			<param-name>ProxyTo</param-name> -->
-<!-- 			<param-value>http://localhost:8080/geoserver</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>Prefix</param-name> -->
-<!-- 			<param-value>/geoserver</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<load-on-startup>1</load-on-startup> -->
-<!-- 	</servlet> -->
-
-<!-- 	<servlet-mapping> -->
-<!-- 		<servlet-name>GeoserverProxy</servlet-name> -->
-<!-- 		<url-pattern>/geoserver/*</url-pattern> -->
-<!-- 	</servlet-mapping> -->
-	
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-
 </web-app>
