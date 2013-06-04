@@ -54,5 +54,30 @@ public class GeoJSONUtility {
     }
   }
 
+  public static String createFeaturesJSONString(SimpleFeatureCollection features) {
+	    FeatureJSON fjson = new FeatureJSON();
 
+	    try {
+	      try {
+	        if (features.getSchema().getCoordinateReferenceSystem() != null) {
+	          LOGGER.info("Encoding CRS?");
+	          fjson.setEncodeFeatureCollectionBounds(true);
+	         // fjson.setEncodeFeatureCollectionCRS(true);
+
+	          // fjson.writeCRS(features.getSchema().getCoordinateReferenceSystem(),
+	          // outStream);
+	        } else {
+	          LOGGER.info("CRS is null");
+	        }
+	        return fjson.toString(features);
+	      } finally {}
+	    } catch (FileNotFoundException e1) {
+	      LOGGER.error("Failed to write feature collection " + e1.getMessage());
+	    } catch (IOException e) {
+	      LOGGER.error("Failed to write feature collection " + e.getMessage());
+	    }
+	    return "[]";
+	  }
+  
+ 
 }

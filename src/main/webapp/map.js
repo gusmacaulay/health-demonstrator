@@ -9,17 +9,18 @@ window['map_init'] = function() {
 			new OpenLayers.Control.Permalink('permalink'),
 			new OpenLayers.Control.MousePosition(),
 			new OpenLayers.Control.OverviewMap(),
-			new OpenLayers.Control.KeyboardDefaults() ];
+			new OpenLayers.Control.KeyboardDefaults()];
 	map = new OpenLayers.Map('mappanel', {
 		controls : controls
 	});
+	
 	var osm = new OpenLayers.Layer.OSM();
-
-	var geographic = new OpenLayers.Projection("EPSG:4326");
+	osm.setIsBaseLayer(true);
+	
 	var mercator = new OpenLayers.Projection("EPSG:900913");
+	var saveStrategy = new OpenLayers.Strategy.Save();
 
-	window['paths'] = new OpenLayers.Layer.Vector("Regions", {
-		//projection : geographic,
+	lyr_results = new OpenLayers.Layer.Vector("Results", {
 		projection : mercator,
 		strategies : [ new OpenLayers.Strategy.Fixed() ],
 
@@ -41,27 +42,62 @@ window['map_init'] = function() {
 		renderers : [ "Canvas", "SVG", "VML" ]
 	});
 
-	map.addLayers([ osm, window['paths'] ]);
+	// define SEIFA layers
+	lyr_SEIFA = new OpenLayers.Layer.WMS("SEIFA",
+			"/health-demonstrator/geoserver/wms", {
+				LAYERS : 'CSDILA_local:seifa',
+				STYLES : '',
+				format : 'image/png',
+				tiled : true,
+				transparent : true,
+				tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
+			}, {
+				buffer : 0,
+				displayOutsideMaxExtent : true,
+				reproject : true
+			});
+	lyr_SEIFA.setIsBaseLayer(false);
+	lyr_SEIFA.setVisibility(false);
+	
+	
+	//define GPs layers 		srsName : "EPSG:900913",
+	lyr_GP = new OpenLayers.Layer.WMS("GP",
+			"/health-demonstrator/geoserver/wms", {
+				LAYERS : 'CSDILA_local:gps_inwmml',
+				STYLES : '',
+				format : 'image/png',
+				tiled : true,
+				transparent : true,
+				tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
+			}, {
+				buffer : 0,
+				displayOutsideMaxExtent : true,
+				reproject : true
+			});
+	lyr_GP.setIsBaseLayer(false);
+	lyr_GP.setVisibility(false);
+	
+	
+	wfs = new OpenLayers.Layer.Vector(
+			"gp-wfs",
+			{
+				strategies : [ new OpenLayers.Strategy.BBOX(), saveStrategy ],
+				projection : mercator,
+				styleMap : '',
+				protocol : new OpenLayers.Protocol.WFS(
+						{
+							version : "1.1.0",
+							srsName : "EPSG:900913",
+							url : "/health-demonstrator/geoserver/wfs",
+							featureType : "gps_inwmml",
+							geometryName : "geom",
+							schema : "/health-demonstrator/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=CSDILA_local:gps_inwmml"
+						})
+			});
+
+	map.addLayers([osm,lyr_results, lyr_SEIFA, lyr_GP, wfs]);
 
 	map.setCenter(new OpenLayers.LonLat(16133371, -4544265), 12);
-	/*
-	 * map.setCenter( new OpenLayers.LonLat(-37.52372699908832,
-	 * 144.583322).transform( new OpenLayers.Projection("EPSG:4328"),
-	 * map.getProjectionObject() ), 6 );
-	 */
-	// //
-	/*
-	 * window['mapPanel'] = new GeoExt.MapPanel({ title: "GeoExt MapPanel",
-	 * renderTo: "mappanel", stateId: "mappanel", height: 400, width: 600, map:
-	 * map, center: new OpenLayers.LonLat(16093371, -4537265), zoom: 10, //
-	 * getState and applyState are overloaded so panel size // can be stored and
-	 * restored getState: function() { var state =
-	 * GeoExt.MapPanel.prototype.getState.apply(this); state.width =
-	 * this.getSize().width; state.height = this.getSize().height; return state; },
-	 * applyState: function(state) {
-	 * GeoExt.MapPanel.prototype.applyState.apply(this, arguments); this.width =
-	 * state.width; this.height = state.height; } });
-	 */
 
-}
+};
 window['map_init']();
