@@ -54,6 +54,7 @@ window['map_init'] = function() {
 			}, {
 				buffer : 0,
 				displayOutsideMaxExtent : true,
+				projection : mercator,
 				reproject : true
 			});
 	lyr_SEIFA.setIsBaseLayer(false);
@@ -72,6 +73,7 @@ window['map_init'] = function() {
 			}, {
 				buffer : 0,
 				displayOutsideMaxExtent : true,
+				projection : mercator,
 				reproject : true
 			});
 	lyr_GP.setIsBaseLayer(false);
